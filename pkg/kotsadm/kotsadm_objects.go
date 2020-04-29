@@ -273,6 +273,10 @@ func kotsadmDeployment(deployOptions types.DeployOptions) *appsv1.Deployment {
 							},
 							Env: []corev1.EnvVar{
 								{
+									Name: "LOG_LEVEL",
+									Value: "info",
+								},
+								{
 									Name: "SHARED_PASSWORD_BCRYPT",
 									ValueFrom: &corev1.EnvVarSource{
 										SecretKeyRef: &corev1.SecretKeySelector{
@@ -314,14 +318,6 @@ func kotsadmDeployment(deployOptions types.DeployOptions) *appsv1.Deployment {
 									},
 								},
 								{
-									Name:  "S3_ENDPOINT",
-									Value: "http://kotsadm-minio:9000",
-								},
-								{
-									Name:  "S3_BUCKET_NAME",
-									Value: "kotsadm",
-								},
-								{
 									Name: "API_ENCRYPTION_KEY",
 									ValueFrom: &corev1.EnvVarSource{
 										SecretKeyRef: &corev1.SecretKeySelector{
@@ -355,8 +351,48 @@ func kotsadmDeployment(deployOptions types.DeployOptions) *appsv1.Deployment {
 									},
 								},
 								{
-									Name:  "S3_BUCKET_ENDPOINT",
-									Value: "true",
+									Name: "S3_BUCKET_NAME",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{
+												Name: "kotsadm-minio",
+											},
+											Key: "bucketname",
+										},
+									},
+								},
+								{
+									Name: "S3_ENDPOINT",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{
+												Name: "kotsadm-minio",
+											},
+											Key: "endpoint",
+										},
+									},
+								},
+								{
+									Name: "S3_REGION",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{
+												Name: "kotsadm-minio",
+											},
+											Key: "region",
+										},
+									},
+								},
+								{
+									Name: "S3_BUCKET_ENDPOINT",
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											LocalObjectReference: corev1.LocalObjectReference{
+												Name: "kotsadm-minio",
+											},
+											Key: "bucket-in-path",
+										},
+									},
 								},
 								{
 									Name:  "API_ADVERTISE_ENDPOINT",
