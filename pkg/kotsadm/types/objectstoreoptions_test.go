@@ -7,10 +7,11 @@ import (
 
 func TestObjectStoreValidateAndHydrate(t *testing.T) {
 	tests := []struct {
-		name         string
-		inputOptions *StorageOptions
-		wantErr      string
-		wantOut      *StorageOptions
+		name          string
+		inputOptions  *StorageOptions
+		wantErr       string
+		wantOut       *StorageOptions
+		skipCheckKeys bool
 	}{
 		{
 			name: "unsupported object store",
@@ -22,16 +23,18 @@ func TestObjectStoreValidateAndHydrate(t *testing.T) {
 		{
 			name: "minio and defaults from flags gets hydrated with internal defaults",
 			inputOptions: &StorageOptions{
-				ObjectStoreType: "internal",
-				BucketInPath:    true,
+				ObjectStoreType:     "internal",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 			wantOut: &StorageOptions{
-				ObjectStoreType: "internal",
-				AccessKeyID:     "",
-				SecretAccessKey: "",
-				BucketName:      "kotsadm",
-				Endpoint:        "http://kotsadm-minio:9000",
-				BucketInPath:    true,
+				ObjectStoreType:     "internal",
+				AccessKeyID:         "",
+				SecretAccessKey:     "",
+				BucketName:          "kotsadm",
+				Endpoint:            "http://kotsadm-minio:9000",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 		},
 		{
@@ -42,6 +45,7 @@ func TestObjectStoreValidateAndHydrate(t *testing.T) {
 				SecretAccessKey: "secret",
 				BucketName:      "some-bucket",
 				Endpoint:        "s3.amazonaws.com",
+				Region:          "us-east-1",
 				BucketInPath:    true,
 			},
 		},
@@ -75,8 +79,36 @@ func TestObjectStoreValidateAndHydrate(t *testing.T) {
 				ObjectStoreType: "external",
 				AccessKeyID:     "key",
 				SecretAccessKey: "secret",
+				Region:          "us-west-2",
 				BucketName:      "some-bucket",
 			},
+		},
+		{
+			name: "none with uri works",
+			inputOptions: &StorageOptions{
+				ObjectStoreType: "none",
+				StorageBaseURI:  "fake",
+			},
+			wantOut: &StorageOptions{
+				ObjectStoreType: "none",
+				StorageBaseURI:  "fake",
+			},
+			skipCheckKeys: true,
+		},
+		{
+			name: "none with minio fails",
+			inputOptions: &StorageOptions{
+				ObjectStoreType:     "none",
+				StorageIncludeMinio: true,
+			},
+			wantErr: "when object store is \"none\", deploy-minio must not be set",
+		},
+		{
+			name: "none without uri fails",
+			inputOptions: &StorageOptions{
+				ObjectStoreType: "none",
+			},
+			wantErr: "when object store is \"none\", storage-base-uri must be set",
 		},
 	}
 	for _, test := range tests {
@@ -87,7 +119,7 @@ func TestObjectStoreValidateAndHydrate(t *testing.T) {
 			if test.wantErr != "" {
 				req.EqualError(err, test.wantErr)
 			} else {
-				req.Nil(err)
+				req.NoError(err)
 			}
 
 			if test.wantOut != nil {
@@ -98,8 +130,10 @@ func TestObjectStoreValidateAndHydrate(t *testing.T) {
 
 				// don't check equality because we're using UUID.New() to generate in some cases,
 				// and I don't feel like mocking it, but these should *always* be set
-				req.NotEmpty(config.options.AccessKeyID)
-				req.NotEmpty(config.options.SecretAccessKey)
+				if !test.skipCheckKeys {
+					req.NotEmpty(config.options.AccessKeyID)
+					req.NotEmpty(config.options.SecretAccessKey)
+				}
 			}
 		})
 	}
@@ -114,14 +148,16 @@ func TestObjectStoreToSecretData(t *testing.T) {
 		{
 			name: "convert to secret data",
 			inputOptions: StorageOptions{
-				ObjectStoreType: "internal",
-				AccessKeyID:     "abcd",
-				SecretAccessKey: "efgh",
-				BucketName:      "kotsadm",
-				Endpoint:        "http://kotsadm-minio:9000",
-				BucketInPath:    true,
+				ObjectStoreType:     "internal",
+				AccessKeyID:         "abcd",
+				SecretAccessKey:     "efgh",
+				BucketName:          "kotsadm",
+				Endpoint:            "http://kotsadm-minio:9000",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 			wantOut: map[string][]byte{
+				"type":           []byte("internal"),
 				"accesskey":      []byte("abcd"),
 				"secretkey":      []byte("efgh"),
 				"endpoint":       []byte("http://kotsadm-minio:9000"),
@@ -135,7 +171,13 @@ func TestObjectStoreToSecretData(t *testing.T) {
 			req := require.New(t)
 
 			data := MustGetObjectStoreConfig(test.inputOptions).ToSecretData()
-			req.Equal(test.wantOut, data)
+			for k, v := range test.wantOut {
+				req.Equal(string(v), string(data[k]))
+			}
+
+			for k, v := range data {
+				req.Equal(string(v), string(test.wantOut[k]))
+			}
 		})
 	}
 }
@@ -151,26 +193,32 @@ func TestObjectStoreLoadSecretData(t *testing.T) {
 		{
 			name: "empty Secret",
 			inputOptions: StorageOptions{
-				ObjectStoreType: "internal",
-				AccessKeyID:     "abcd",
-				SecretAccessKey: "efgh",
-				BucketName:      "kotsadm",
-				Endpoint:        "http://kotsadm-minio:9000",
-				BucketInPath:    true,
+				ObjectStoreType:     "internal",
+				AccessKeyID:         "abcd",
+				SecretAccessKey:     "efgh",
+				BucketName:          "kotsadm",
+				Endpoint:            "http://kotsadm-minio:9000",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 			inputSecret: map[string][]byte{},
 			wantOut: StorageOptions{
-				ObjectStoreType: "internal",
-				AccessKeyID:     "abcd",
-				SecretAccessKey: "efgh",
-				BucketName:      "kotsadm",
-				Endpoint:        "http://kotsadm-minio:9000",
-				BucketInPath:    true,
+				ObjectStoreType:     "internal",
+				AccessKeyID:         "abcd",
+				SecretAccessKey:     "efgh",
+				BucketName:          "kotsadm",
+				Endpoint:            "http://kotsadm-minio:9000",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 		},
 		{
-			name:         "error if can't parse bool",
-			inputOptions: StorageOptions{},
+			name: "error if can't parse bool",
+			inputOptions: StorageOptions{
+				ObjectStoreType:     "internal",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
+			},
 			inputSecret: map[string][]byte{
 				"bucket-in-path": []byte("no thank you"),
 			},
@@ -180,45 +228,51 @@ func TestObjectStoreLoadSecretData(t *testing.T) {
 		{
 			name: "load data",
 			inputOptions: StorageOptions{
+				ObjectStoreType:     "internal",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 			inputSecret: map[string][]byte{
-				"type": []byte("internal"),
-				"accesskey": []byte("123"),
-				"secretkey": []byte("456"),
-				"bucketname": []byte("kotsadm"),
-				"endpoint": []byte("http://kotsadm-minio:9000"),
-				"bucket-in-path": []byte("false"),
+				"type":           []byte("internal"),
+				"accesskey":      []byte("123"),
+				"secretkey":      []byte("456"),
+				"bucketname":     []byte("kotsadm"),
+				"endpoint":       []byte("http://kotsadm-minio:9000"),
+				"bucket-in-path": []byte("true"),
 			},
 			wantOut: StorageOptions{
-				ObjectStoreType: "internal",
-				AccessKeyID:     "123",
-				SecretAccessKey: "456",
-				BucketName:      "kotsadm",
-				Endpoint:        "http://kotsadm-minio:9000",
-				BucketInPath:    false,
+				ObjectStoreType:     "internal",
+				AccessKeyID:         "123",
+				SecretAccessKey:     "456",
+				BucketName:          "kotsadm",
+				Endpoint:            "http://kotsadm-minio:9000",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 		},
 		{
 			name: "overwrite defaults from older version of secret",
 			inputOptions: StorageOptions{
-				ObjectStoreType: "internal",
-				AccessKeyID:     "some-uuid",
-				SecretAccessKey: "some-other-uuid",
-				BucketName:      "kotsadm",
-				Endpoint:        "http://kotsadm-minio:9000",
-				BucketInPath:    true,
+				ObjectStoreType:     "internal",
+				AccessKeyID:         "some-uuid",
+				SecretAccessKey:     "some-other-uuid",
+				BucketName:          "kotsadm",
+				Endpoint:            "http://kotsadm-minio:9000",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 			inputSecret: map[string][]byte{
 				"accesskey": []byte("123"),
 				"secretkey": []byte("456"),
 			},
 			wantOut: StorageOptions{
-				ObjectStoreType: "internal",
-				AccessKeyID:     "123",
-				SecretAccessKey: "456",
-				BucketName:      "kotsadm",
-				Endpoint:        "http://kotsadm-minio:9000",
-				BucketInPath:    true,
+				ObjectStoreType:     "internal",
+				AccessKeyID:         "123",
+				SecretAccessKey:     "456",
+				BucketName:          "kotsadm",
+				Endpoint:            "http://kotsadm-minio:9000",
+				BucketInPath:        true,
+				StorageIncludeMinio: true,
 			},
 		},
 	}
@@ -226,11 +280,17 @@ func TestObjectStoreLoadSecretData(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			req := require.New(t)
 
-			err := MustGetObjectStoreConfig(test.inputOptions).LoadSecretData(test.inputSecret)
+			config, err := NewObjectStoreConfig(test.inputOptions)
+			req.NoError(err)
+
+			err = config.LoadSecretData(test.inputSecret)
+
 			if test.wantErr != "" {
 				req.EqualError(err, test.wantErr)
+			} else {
+				req.NoError(err)
+				req.Equal(test.wantOut, config.options)
 			}
-			req.Equal(test.wantOut, test.inputOptions)
 		})
 	}
 }

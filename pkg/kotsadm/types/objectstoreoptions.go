@@ -81,7 +81,7 @@ func (o *StorageOptions) validateAndHydrate() error {
 		o.ObjectStoreType = ObjectStoreTypeInternal
 	}
 
-	if o.ObjectStoreType != ObjectStoreTypeInternal && o.ObjectStoreType != ObjectStoreTypeExternal {
+	if o.ObjectStoreType != ObjectStoreTypeInternal && o.ObjectStoreType != ObjectStoreTypeExternal && o.ObjectStoreType != ObjectStoreTypeNone {
 		return errors.Errorf("unsupported object store type: %s", o.ObjectStoreType)
 	}
 
@@ -90,12 +90,11 @@ func (o *StorageOptions) validateAndHydrate() error {
 			return errors.Errorf(`when object store is "none", deploy-minio must not be set`)
 		}
 
-		if !o.StorageIncludeDockerDistribution {
-			if o.StorageBaseURI == "" {
-				return errors.Errorf(`when object store is "none" and deploy-distribution is not set, storage-base-uri must be set"`)
-			}
+		// we could default this here but the logic for defaulting to an internal service is already elsewhere
+		// and kots CLI doesn't consume this value directly anyways, just for validation right now, runs after defaults are set
+		if o.StorageBaseURI == "" {
+			return errors.Errorf(`when object store is "none", storage-base-uri must be set`)
 		}
-
 	}
 
 	if o.ObjectStoreType == ObjectStoreTypeInternal {
@@ -141,7 +140,7 @@ func (o *StorageOptions) validateAndHydrate() error {
 		}
 
 		if o.Region == "" {
-			return errors.Errorf(`when object store is external and endpoint is not specified, must supply a region`)
+			return errors.Errorf(`when object store is external, must supply a region`)
 		}
 
 		// if no endpoint, assume AWS S3
