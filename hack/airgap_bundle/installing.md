@@ -45,7 +45,6 @@ Now, let's unpack the bundle and run the script with no arguments to see the usa
 tar xvf kots-*.tar.gz
 ./install.sh
 ```
-
 You should see an error and some help text
 
 ```
@@ -69,6 +68,17 @@ KOTS_REGISTRY_PASSWORD -- optional, password to push images. Leave blank if this
 
 ```
 
+Go to the directory yaml and open the file kotsadm.yaml for editing.
+
+Search for KOTSADM_API_ENDPOINT and you should see something like: 
+```
+- name: KOTSADM_API_ENDPOINT
+    value: http://kotsadm-api-node.appname.svc.cluster.local:3000
+```
+You need to update the value to replace appname with the namespace you have created to deploy harness.
+```
+value: http://kotsadm-api-node.<namespace>.svc.cluster.local:3000
+```
 
 Let's invoke this with our set variables (I'm leaving namespace blank in this case). Since my machine is already configured to push to the registry via `docker login`,
 I'll omit the docker credentials.
@@ -108,7 +118,6 @@ kotsadm-nodeport   NodePort   10.96.0.239   <none>        3000:25124/TCP   7s
 And then navigate to <instance ip> : <port>, in this case `http://25.238.234.48:25124`
 
 **Note**: in this case we've cheated and given the "airgapped cluster" a public IP so we can reach the kotsadm console, but you can check out the [end to end gcp example](./end_to_end_gcp_example.md) for an example of using an airgapped registry and an ssh tunnel for a "full airgap" example where instances don't have internet gateways. If your airgapped cluster has access via a VPN, that's an option as well.
-
-
+  
 
 
