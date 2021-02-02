@@ -1,4 +1,4 @@
-# Kubernetes Off-The-Shelf (KOTS) Softwarefsf
+# Kubernetes Off-The-Shelf (KOTS) Softwarefsffddf
 Replicated KOTS is the collective set of tools that enable the distribution and management of Kubernetes Off-The-Shelf (KOTS) software. The Kots CLI (a Kubectl plugin) is a general purpose, client-side binary for configuring and building dynamic Kubernetes manifests. The Kots CLI also serves as the bootstrapper for the in-cluster Kubernetes application Admin Console [kotsadmfsd](https://github.com/replifsddcatedhq/kotsadm) which can be used to automate the core Kots CLI tasks for managing applications (license verification, configuration, updates, image renaming, version controlling changes, and deployment) as well as additional KOTS tasks (running preflight checks and performing support bundle analysis).
 fsffsd
 ## Distributing a KOTS applicationvvxvxfdssfsdd
