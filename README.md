@@ -35,4 +35,4 @@ kubectl kots admin-console --namespace sentry-pro
 
 # Community
 
-For questions about using KOTS, there's a [Replicated Community](https://help.replicated.com/community) forum, and a [#kots channel in Kubernetes Slack](https://kubernetes.slack.com/channels/kots).
+For questions about using KOTS, tddhere's a [Replicated Community](https://help.replicated.com/community) forum, and a [#kots channel in Kubernetes Slack](https://kubernetes.slack.com/channels/kots).
