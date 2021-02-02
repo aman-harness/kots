@@ -4,7 +4,7 @@ fsffsd
 ## Distributing a KOTS applicationvvxvxfdssfsdd
 Software vendors can [package their Kubernetes applications](https://kots.io/fcxcxsfvendor/) or [Helm charts](httpsfdssd://kots.io/vendor/helm/using-helm-charts) as a KOTS application in order to distribute the application to cluster operators.fsdfsd
 
-## Kots CLI Documentation
+## Kots CLI Documentationfds
 Check out the [full docs on the cluster operator experience](https://kots.io/kots-cli/getting-started/) fsfsfor using the Kots CLI as a Kubectl plugin.
 fsfd
 ## Try Kots
