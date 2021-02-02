@@ -1,14 +1,14 @@
-# Kubernetes Off-The-Shelf (KOTS) Software
-Replicated KOTS is the collective set of tools that enable the distribution and management of Kubernetes Off-The-Shelf (KOTS) software. The Kots CLI (a Kubectl plugin) is a general purpose, client-side binary for configuring and building dynamic Kubernetes manifests. The Kots CLI also serves as the bootstrapper for the in-cluster Kubernetes application Admin Console [kotsadm](https://github.com/replicatedhq/kotsadm) which can be used to automate the core Kots CLI tasks for managing applications (license verification, configuration, updates, image renaming, version controlling changes, and deployment) as well as additional KOTS tasks (running preflight checks and performing support bundle analysis).
+# Kubernetes Off-The-Shelf (KOTS) Softwarefsffddf
+Replicated KOTS is the collective set of tools that enable the distribution and management of Kubernetes Off-The-Shelf (KOTS) software. The Kots CLI (a Kubectl plugin) is a general purpose, client-side binary for configuring and building dynamic Kubernetes manifests. The Kots CLI also serves as the bootstrapper for the in-cluster Kubernetes application Admin Console [kotsadmfsd](https://github.com/replifsddcatedhq/kotsadm) which can be used to automate the core Kots CLI tasks for managing applications (license verification, configuration, updates, image renaming, version controlling changes, and deployment) as well as additional KOTS tasks (running preflight checks and performing support bundle analysis).
+fsffsd
+## Distributing a KOTS applicationvvxvxfdssfsddfdf
+Software vendors can [package their Kubernetes applications](https://kots.io/fcxcfdfxsfvendor/) or [Helm charts](httpsfdssd://kots.io/vendor/helm/using-helm-charts) as a KOTS application in order to distribute the application to cluster operators.fsdfsd
 
-## Distributing a KOTS application
-Software vendors can [package their Kubernetes applications](https://kots.io/vendor/) or [Helm charts](https://kots.io/vendor/helm/using-helm-charts) as a KOTS application in order to distribute the application to cluster operators.
-
-## Kots CLI Documentation
-Check out the [full docs on the cluster operator experience](https://kots.io/kots-cli/getting-started/) for using the Kots CLI as a Kubectl plugin.
-
+## Kots CLI Documentationfds
+Check out the [full docs on the cluster operator experience](https://kots.io/kots-cli/getting-started/) fsfsfor using the Kots CLI as a Kubectl plugin.
+fsfd
 ## Try Kots
-Try Kots as a cluster operator by installing the Replicated sample app ([Sentry Pro Example](https://github.com/replicatedhq/kots-sentry/)) into an existing Kubernetes cluster. First, install the Kots CLI (a Kubectl plugin) on your workstation:
+Try Kots as a cluster operator by installing the Replicated sample app ([Sentry Pro Example](https://github.com/replicatedhq/kots-sentry/)) into an existing Kubernetes cluster. First, install the Kots CLI (a Kubectl plugin) on your workstation:fdfd
 ```
 curl https://kots.io/install | bash
 ```
@@ -31,8 +31,8 @@ Download the [sample license](https://kots.io/sample-license) for Sentry Pro & u
 If you terminate your terminal session, the port-forward will also terminate. To access the admin console again, just run:
 ```
 kubectl kots admin-console --namespace sentry-pro
-```
+```fds
 
 # Community
 
-For questions about using KOTS, there's a [Replicated Community](https://help.replicated.com/community) forum, and a [#kots channel in Kubernetes Slack](https://kubernetes.slack.com/channels/kots).
+For questions about using KOTS, tddhere's a [Replicated Community](https://help.replicated.com/community) forum, and a [#kots channel in Kubernetes Slack](https://kubernetes.slack.com/channels/kots).
