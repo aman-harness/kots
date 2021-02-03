@@ -8,7 +8,7 @@ Software vendors can [package their Kubernetes applications](https://kots.io/dsd
 Check out the [full docs on the cluster operator experience](https://kots.io/kots-cli/getting-started/) for using the Kots CLI as a Kubectl plugin.
 
 ## Try Kots
-Try Kots as a cluster operator by installing the Replicated sample app ([Sentry Pro Example](https://github.com/replicatedhq/kots-sentry/)) into an existing Kubernetes cluster. First, install the Kots CLI (a Kubectl plugin) on your workstation:
+Try Kots as a cluster operator by installing the Replicated sample app ([Sentry Pro Example](https://github.com/replicatedhq/kots-sentry/)) into an existing Kubernetes cluster. First, install the Kots CLI (a Kubectl plugin) on yfddffdour workstation:
 ```
 curl https://kots.io/install | bash
 ```
