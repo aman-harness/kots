@@ -1,14 +1,14 @@
-# Kubernetes Off-The-Shelf (KOTS) Software
+# Kubernetes Off-The-Shelf (KOTS) Softwaredsds
 Replicated KOTS is the collective set of tools that enable the distribution and management of Kubernetes Off-The-Shelf (KOTS) software. The Kots CLI (a Kubectl plugin) is a general purpose, client-side binary for configuring and building dynamic Kubernetes manifests. The Kots CLI also serves as the bootstrapper for the in-cluster Kubernetes application Admin Console [kotsadm](https://github.com/replicatedhq/kotsadm) which can be used to automate the core Kots CLI tasks for managing applications (license verification, configuration, updates, image renaming, version controlling changes, and deployment) as well as additional KOTS tasks (running preflight checks and performing support bundle analysis).
-
-## Distributing a KOTS application
-Software vendors can [package their Kubernetes applications](https://kots.io/vendor/) or [Helm charts](https://kots.io/vendor/helm/using-helm-charts) as a KOTS application in order to distribute the application to cluster operators.
+fsdf
+## Distributing a KOTS applicationfdf
+Software vendors can [package their Kubernetes applications](https://kots.io/dsdsdfsfdvendor/) or [Helm charts](https://kots.io/vendor/helm/using-helm-charts) as a KOTS application in order to distribute the application to clustemkl,;'r operators.
 
 ## Kots CLI Documentation
 Check out the [full docs on the cluster operator experience](https://kots.io/kots-cli/getting-started/) for using the Kots CLI as a Kubectl plugin.
 
 ## Try Kots
-Try Kots as a cluster operator by installing the Replicated sample app ([Sentry Pro Example](https://github.com/replicatedhq/kots-sentry/)) into an existing Kubernetes cluster. First, install the Kots CLI (a Kubectl plugin) on your workstation:
+Try Kots as a cluster operator by installing the Replicated sample app ([Sentry Pro Example](https://github.com/replicatedhq/kots-sentry/)) into an existing Kubernetes cluster. First, install the Kots CLI (a Kubectl plugin) on yfddffdour workstation:
 ```
 curl https://kots.io/install | bash
 ```
